@@ -42,12 +42,13 @@
       },
       "runtime" : {
          "requires" : {
-            "perl" : "5.008001"
+            "perl" : "5.010"
          }
       },
       "test" : {
          "requires" : {
-            "Test::More" : "0.98"
+            "Module::Build::Tiny" : "0.035",
+            "Test2::V0" : "0.000111"
          }
       }
    },

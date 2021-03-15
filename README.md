@@ -1,10 +1,13 @@
+
 # NAME
 
 Sub::WrapInType::Attribute - It's new $module
 
 # SYNOPSIS
 
-    use Sub::WrapInType::Attribute;
+```perl
+use Sub::WrapInType::Attribute;
+```
 
 # DESCRIPTION
 
