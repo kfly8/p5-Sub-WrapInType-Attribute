@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "attribute for Sub::WrapInType",
    "author" : [
       "kfly8 <kfly@cpan.org>"
    ],
@@ -42,7 +42,12 @@
       },
       "runtime" : {
          "requires" : {
-            "perl" : "5.010"
+            "Attribute::Handlers" : "0",
+            "B::Hooks::EndOfScope" : "0.23",
+            "Sub::Util" : "0",
+            "Sub::WrapInType" : "0.07",
+            "namespace::autoclean" : "0",
+            "perl" : "v5.10.0"
          }
       },
       "test" : {
