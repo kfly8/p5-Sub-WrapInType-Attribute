@@ -12,6 +12,7 @@ use namespace::autoclean;
 
 my $DEFAULT_CHECK = !!($ENV{SUB_WRAPINTYPE_ATTRIBUTE_CHECK} // 1);
 my %CHECK;
+my @INSTALL_ARGS;
 
 sub import {
     my $class = shift;
@@ -24,6 +25,12 @@ sub import {
         no strict 'refs';
         push @{"${pkg}::ISA"}, $class;
     }
+
+    on_scope_end {
+        while (my $args = shift @INSTALL_ARGS) {
+            Sub::WrapInType::Attribute::Installer->install(@$args);
+        }
+    };
     return;
 }
 
@@ -34,10 +41,7 @@ sub WrapSub :ATTR(CODE,BEGIN) {
         check => $CHECK{$pkg} // $DEFAULT_CHECK,
         skip_invocant => 0,
     };
-
-    on_scope_end {
-        Sub::WrapInType::Attribute::Installer->install($opts, $pkg, @args);
-    };
+    push @INSTALL_ARGS => [$opts, $pkg, @args];
     return;
 }
 
@@ -48,10 +52,7 @@ sub WrapMethod :ATTR(CODE,BEGIN) {
         check => $CHECK{$pkg} // $DEFAULT_CHECK,
         skip_invocant => 1,
     };
-
-    on_scope_end {
-        Sub::WrapInType::Attribute::Installer->install($opts, $pkg, @args);
-    };
+    push @INSTALL_ARGS => [$opts, $pkg, @args];
     return;
 }
 
