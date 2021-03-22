@@ -7,7 +7,9 @@ our $VERSION = "0.01";
 
 use Attribute::Handlers;
 use B::Hooks::EndOfScope;
-use Sub::WrapInType::Attribute::Installer;
+use Sub::WrapInType ();
+use Sub::Util ();
+use attributes;
 use namespace::autoclean;
 
 my $DEFAULT_CHECK = !!($ENV{SUB_WRAPINTYPE_ATTRIBUTE_CHECK} // 1);
@@ -22,13 +24,16 @@ sub import {
     $CHECK{$pkg} = !!$args{check} if exists $args{check};
     {
         # allow importing package to use attribute
-        no strict 'refs';
-        push @{"${pkg}::ISA"}, $class;
+        no strict qw(refs);
+        my $MODIFY_CODE_ATTRIBUTES = \&Attribute::Handlers::UNIVERSAL::MODIFY_CODE_ATTRIBUTES;
+        *{"${pkg}::MODIFY_CODE_ATTRIBUTES"} = $MODIFY_CODE_ATTRIBUTES;
+        *{"${pkg}::_ATTR_CODE_WrapSub"} = $class->can('WrapSub');
+        *{"${pkg}::_ATTR_CODE_WrapMethod"} = $class->can('WrapMethod');
     }
 
     on_scope_end {
         while (my $args = shift @INSTALL_ARGS) {
-            Sub::WrapInType::Attribute::Installer->install(@$args);
+            $class->install(@$args);
         }
     };
     return;
@@ -53,6 +58,34 @@ sub WrapMethod :ATTR(CODE,BEGIN) {
         skip_invocant => 1,
     };
     push @INSTALL_ARGS => [$opts, $pkg, @args];
+    return;
+}
+
+sub install {
+    my $class = shift;
+    my ($options, $pkg, $symbol, $code, $attr, $data) = @_;
+
+    my $typed_code = Sub::WrapInType->new(
+        params  => $data->[0],
+        isa     => $data->[1],
+        code    => $code,
+        options => $options,
+    );
+
+    if (my @attr = attributes::get($code)) {
+        no warnings qw(misc);
+        attributes->import($pkg, $typed_code, @attr);
+    }
+
+    my $prototype = Sub::Util::prototype($code);
+    Sub::Util::set_prototype($prototype, $typed_code);
+    Sub::Util::set_subname(Sub::Util::subname($code), $typed_code);
+
+    {
+        no strict qw(refs);
+        no warnings qw(redefine);
+        *$symbol = $typed_code;
+    }
     return;
 }
 
