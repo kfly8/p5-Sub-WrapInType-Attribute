@@ -1,4 +1,4 @@
-requires 'perl', '5.010';
+requires 'perl', '5.014';
 
 requires 'Attribute::Handlers';
 requires 'B::Hooks::EndOfScope', '0.23';

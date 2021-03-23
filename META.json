@@ -47,7 +47,7 @@
             "Sub::Util" : "0",
             "Sub::WrapInType" : "0.07",
             "namespace::autoclean" : "0",
-            "perl" : "v5.10.0"
+            "perl" : "v5.14.0"
          }
       },
       "test" : {
