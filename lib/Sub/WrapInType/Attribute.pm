@@ -33,7 +33,7 @@ sub import {
 
     on_scope_end {
         while (my $args = shift @INSTALL_ARGS) {
-            $class->install(@$args);
+            $class->_install(@$args);
         }
     };
     return;
@@ -61,7 +61,7 @@ sub WrapMethod :ATTR(CODE,BEGIN) {
     return;
 }
 
-sub install {
+sub _install {
     my $class = shift;
     my ($options, $pkg, $symbol, $code, $attr, $data) = @_;
 
@@ -114,6 +114,16 @@ Sub::WrapInType::Attribute - attribute for Sub::WrapInType
 =head1 DESCRIPTION
 
 This module provides attribute for Sub::WrapInType, which makes it easier to check during the compilation phase.
+
+=head1 ATTRIBUTES
+
+=head2 :WrapSub(\@parameter_types, $return_type)
+
+The C<:WrapSub> code attribute performs C<Sub::WrapInType#wrap_sub> on the subroutine that specified this attribute.
+
+=head2 :WrapMethod(\@parameter_types, $return_type)
+
+The C<:WrapMethod> code attribute performs C<Sub::WrapInType#wrap_method> on the subroutine that specified this attribute.
 
 =head1 SEE ALSO
 
