@@ -13,6 +13,7 @@ subtest ':WrapSub' => sub {
     is $foo->returns, "Str";
     ok !$foo->is_method;
     is foo(123), 'foo';
+    ok dies { foo('aaa') }, 'invalid case';
 
     ok !attributes::get($foo);
     ok !Sub::Util::prototype($foo);
