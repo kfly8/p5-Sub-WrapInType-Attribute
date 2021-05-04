@@ -34,7 +34,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cpm install -g -with-all
+        cpm install -g --with-all
 
     - name: Build
       run: |
