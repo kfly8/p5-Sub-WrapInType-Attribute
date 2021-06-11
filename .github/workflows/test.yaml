@@ -32,10 +32,8 @@ jobs:
       uses: shogo82148/actions-setup-perl@v1
       with:
         perl-version: ${{ matrix.perl }}
-
-    - name: Install dependencies
-      run: |
-        cpm install -g --with-all
+        install-modules-with: cpm
+        install-modules-args: -g --with-all
 
     - name: Build
       run: |
